@@ -9,7 +9,7 @@ function App() {
   const [viewMode, setViewMode] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [messages, setMessages] = useState([
-    { id: 1, role: 'ai', content: 'Hi! I\'m your AI website builder. What kind of website can I help you build today?' }
+    { id: 1, role: 'assistant', content: 'Hi! I\'m your AI website builder. What kind of website can I help you build today?' }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -30,12 +30,13 @@ function App() {
     setIsLoading(true);
 
     try {
-      const result = await generateSite(userMessage, projectCode);
+      const result = await generateSite(userMessage, projectCode, messages);
 
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
-        role: 'ai',
-        content: result.explanation || "I've updated the website based on your request!"
+        role: 'assistant',
+        content: result.explanation || "I've updated the website based on your request!",
+        reasoning_details: result._raw_message?.reasoning_details
       }]);
 
       setProjectCode({
@@ -189,11 +190,21 @@ function App() {
                   key={msg.id}
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-sm ${msg.role === 'user'
-                    ? 'bg-indigo-600 text-white'
+                  <div className={`max-w-[85%] rounded-2xl text-sm overflow-hidden ${msg.role === 'user'
+                    ? 'bg-indigo-600 text-white p-4'
                     : 'bg-white/5 border border-white/10 text-slate-200'
                     }`}>
-                    {msg.content}
+                    {msg.reasoning_details && (
+                      <div className="bg-amber-500/10 border-b border-white/5 p-3 text-[11px] text-amber-200/60 font-mono italic">
+                        <div className="flex items-center gap-2 mb-1 opacity-50 uppercase tracking-tighter text-[9px] font-bold">
+                          <Plus size={10} /> Thought Process
+                        </div>
+                        {msg.reasoning_details}
+                      </div>
+                    )}
+                    <div className="p-4">
+                      {msg.content}
+                    </div>
                   </div>
                 </div>
               ))}
