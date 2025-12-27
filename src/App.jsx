@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Layout, Code, Eye, Save, Download, Menu, X, Send, Plus, Settings, Monitor, Tablet, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { interpretPrompt, generateSite } from './utils/aiEngine';
+import { generateSite } from './utils/aiEngine';
 
 function App() {
   const [activeTab, setActiveTab] = useState('design'); // 'design' | 'code' | 'preview'
@@ -13,7 +13,6 @@ function App() {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [provider, setProvider] = useState('deepseek'); // 'gemini' | 'deepseek'
   const [projectCode, setProjectCode] = useState({
     html: '<h1>Welcome to your new website</h1><p>Start by asking the AI to build something for you.</p>',
     css: 'body { font-family: sans-serif; padding: 20px; } h1 { color: #6366f1; }',
@@ -31,7 +30,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const result = await generateSite(userMessage, projectCode, provider);
+      const result = await generateSite(userMessage, projectCode);
 
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
@@ -115,7 +114,7 @@ function App() {
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
-          <span className="font-display font-bold text-xl tracking-tight">Vizion AI</span>
+          <span className="font-display font-bold text-xl tracking-tight">med farah</span>
         </div>
 
         <div className="flex items-center gap-4">
@@ -249,7 +248,7 @@ function App() {
           </div>
 
           <div
-            className={`bg-white rounded-xl shadow-2xl transition-all duration-500 overflow-hidden flex-shrink-0 ${viewMode === 'desktop' ? 'w-full h-full' :
+            className={`bg-white rounded-xl shadow-2xl transition-all duration-500 overflow-hidden flex-shrink-0 min-h-0 ${viewMode === 'desktop' ? 'w-full h-full' :
               viewMode === 'tablet' ? 'w-[768px] h-[1024px]' :
                 'w-[375px] h-[667px]'
               }`}
@@ -342,19 +341,12 @@ function App() {
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
                   <div className="space-y-2">
                     <label className="text-[11px] text-slate-400">AI Provider</label>
-                    <div className="flex bg-slate-900/50 p-1 rounded-lg border border-white/5">
-                      <button
-                        onClick={() => setProvider('gemini')}
-                        className={`flex-1 px-2 py-1.5 rounded-md text-[10px] font-bold transition-all ${provider === 'gemini' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-white'}`}
-                      >
-                        GEMINI
-                      </button>
-                      <button
-                        onClick={() => setProvider('deepseek')}
-                        className={`flex-1 px-2 py-1.5 rounded-md text-[10px] font-bold transition-all ${provider === 'deepseek' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:text-white'}`}
-                      >
-                        DEEPSEEK
-                      </button>
+                    <div className="flex flex-col gap-2 bg-slate-900/50 p-3 rounded-lg border border-white/5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                        <span className="text-[10px] font-bold text-slate-300">OPENROUTER ACTIVE</span>
+                      </div>
+                      <p className="text-[9px] text-slate-500">Exclusively using OpenRouter for site generation.</p>
                     </div>
                   </div>
                   <div className="space-y-2">
